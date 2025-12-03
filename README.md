@@ -1,43 +1,25 @@
 # 📘 Blog App
 
-Just a blog app I made so I don't forget how to make apps xD
+Just a blog app
+
+## Environment setup
+
+Create one file in the root:`.env.local`
+
+Add the following variable:
 
 ```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm start
-
-# Run on Android device/emulator
-npm run android
-
-# Run on iOS device/simulator
-npm run ios
-
-# Run in browser
-npm run web
-
-# Lint check
-npm run lint
-
-# Auto-fix lint issues
-npm run lint:fix
-
-# Format code
-npm run format
-
-# Reset project (clean app directory)
-npm run reset-project
+EXPO_PUBLIC_API_URL=
+EXPO_PUBLIC_WEB_URL=
 ```
 
-## Tech Stack
-- Expo SDK 52
-- React Native
-- React Navigation
-- React Query
-- Firebase Crashlytics
-- Formik + Zod
-- i18next
-- MMKV storage
-- Syntax highlighting for code
+# Scripts Overview
+- `npm run prebuild` - Expo prebuild
+- `npm start` - Start Expo development server
+- `npm run android` - Run app on connected Android device
+- `npm run web` - Run app on web
+- `npm run ios` - Run app on connected iOS device
+- `npm run format` - Run prettier
+
+## Showcases
+<img src="/docs/showcases/case.gif" height="300px" />
