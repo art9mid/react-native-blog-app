@@ -1,0 +1,55 @@
+name: AI Fix
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_key:
+        description: 'Jira issue key'
+        required: true
+      issue_summary:
+        description: 'Issue summary'
+        required: true
+      issue_description:
+        description: 'Issue description'
+        required: true
+
+jobs:
+  ai-fix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Create branch and fix
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          git checkout -b fix-${{ github.event.inputs.issue_key }}
+          claude -p "You are a senior developer. Fix this issue:
+          
+          Issue: ${{ github.event.inputs.issue_key }}
+          Summary: ${{ github.event.inputs.issue_summary }}
+          Description: ${{ github.event.inputs.issue_description }}
+          
+          Read the codebase, understand the issue, make the fix, and save the changes to the files."
+          
+          git config user.name "AI Bot"
+          git config user.email "ai-bot@fanalysis.com"
+          git add -A
+          git commit -m "fix(${{ github.event.inputs.issue_key }}): AI-generated fix" || echo "No changes"
+          git push origin fix-${{ github.event.inputs.issue_key }}
+
+      - name: Create PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --title "fix(${{ github.event.inputs.issue_key }}): ${{ github.event.inputs.issue_summary }}" \
+            --body "Auto-generated fix for ${{ github.event.inputs.issue_key }}\n\n${{ github.event.inputs.issue_description }}" \
+            --base main \
+            --head fix-${{ github.event.inputs.issue_key }}
